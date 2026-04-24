@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import joblib
 from sklearn.model_selection import train_test_split
@@ -23,7 +24,7 @@ def train_model(
     dataset_path: Path | None = None,
     model_dir: Path = MODELS_DIR,
     reports_dir: Path = REPORTS_DIR,
-) -> dict[str, float]:
+) -> dict[str, Any]:
     """Train the model, persist artifacts and return evaluation metrics."""
     dataframe = load_dataset(dataset_path)
     features, target = split_features_target(dataframe)
@@ -39,10 +40,10 @@ def train_model(
     model.fit(x_train, y_train)
 
     predictions = model.predict(x_test)
-    metrics = evaluate_regression(y_test, predictions)
+    metrics: dict[str, Any] = evaluate_regression(y_test, predictions)
     metrics["target"] = TARGET_COLUMN
-    metrics["train_rows"] = float(len(x_train))
-    metrics["test_rows"] = float(len(x_test))
+    metrics["train_rows"] = len(x_train)
+    metrics["test_rows"] = len(x_test)
 
     model_dir.mkdir(parents=True, exist_ok=True)
     reports_dir.mkdir(parents=True, exist_ok=True)
