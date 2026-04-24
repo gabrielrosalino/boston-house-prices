@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_error
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -78,9 +80,9 @@ def build_tuned_pipeline() -> GridSearchCV:
     )
 
 
-def evaluate_regression(y_true, y_pred) -> dict[str, float]:
+def evaluate_regression(y_true: Sequence[float], y_pred: Sequence[float]) -> dict[str, float]:
     return {
         "mae": float(mean_absolute_error(y_true, y_pred)),
-        "rmse": float(mean_squared_error(y_true, y_pred, squared=False)),
+        "rmse": float(root_mean_squared_error(y_true, y_pred)),
         "r2": float(r2_score(y_true, y_pred)),
     }
